@@ -13,14 +13,18 @@ import message_icon from './message_icon.png'
 import code_icon from './code_icon.png'
 import send_icon from './send_icon.png'
 import gemini_icon from './gemini_icon.png'
-
+import Copy_text from './Copy_text.png'
+import like_text from './Like.png'
+import Rotate_arrow from './Rotate_arrow.png'
 export const assets = {
     history_icon,
     menu_icon,
     plus_icon,
     question_icon,
     setting_icon,
+    like_text,
     bulb_icon,
+    Rotate_arrow,
     compass_icon,
     gallery_icon,
     mic_icon,
@@ -29,5 +33,6 @@ export const assets = {
     message_icon,
     code_icon,
     send_icon,
-    gemini_icon
+    gemini_icon,
+    Copy_text,
 }

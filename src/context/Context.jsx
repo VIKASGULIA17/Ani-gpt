@@ -12,41 +12,60 @@ const ContextProvider = (props) => {
     const [resultData, setResultData] = useState("");
 
     const delayPara = (index, nextWord) => {
-        setTimeout(function () {
-            setResultData((prev) => prev+ nextWord);
+        setTimeout(() => {
+            setResultData((prev) => prev + nextWord);
         }, 75 * index);
     };
 
     const onSent = async () => {
-        setResultData("");
-        setLoading(true);
-        setshowResult(true);
-        setRecentPrompt(input);
-        setPrevPrompt((prev) => [...prev, input]);
-        const response = await run(input);
+        try {
+            // Reset result state
+            setResultData("");
+            setLoading(true);
+            setshowResult(true);
 
-        let responseArray = response.split("**");
-        let newResponse = ""; // Initialize newResponse as an empty string
+            // Update prompt history
+            setRecentPrompt(input);
+            setPrevPrompt((prev) => [...prev, input]);
 
-        for (let i = 0; i < responseArray.length; i++) {
-            if (i === 0 || i % 2 !== 1) {
-                newResponse += responseArray[i];
-            } else {
-                newResponse += "<b>" + responseArray[i] + "</b>";
-            }
+            // Fetch response
+            const response = await run(input);
+            if (!response) throw new Error("No response received");
+
+            // Split and format response
+            const responseParts = response.split("'''");
+            let formattedResponse = "";
+
+            responseParts.forEach((part, index) => {
+                if (index % 2 === 1) {
+                    // Wrap code blocks
+                    formattedResponse += `<pre><code>${part}</code></pre>`;
+                } else {
+                    // Format regular text
+                    formattedResponse += part
+                        .split("**")
+                        .map((chunk, i) =>
+                            i % 2 === 1 ? `<b>${chunk}</b>` : chunk
+                        )
+                        .join("")
+                        .replace(/\*/g, "<br>")
+                        .replace(/## /g, "<br>");
+                }
+            });
+
+            // Split formatted response into words for animation
+            const words = formattedResponse.split(" ");
+            words.forEach((word, index) => {
+                delayPara(index, word + " ");
+            });
+
+            setLoading(false);
+            setinput("");
+        } catch (error) {
+            console.error("Error handling response:", error);
+            setLoading(false);
+            setResultData("An error occurred. Please try again.");
         }
-
-        let newResponse2 = newResponse.split("*").join("</br>");
-        let newResponse3 = newResponse2.split("## ").join("</br>");
-        let newResponseArray = newResponse3.split(" ");
-
-        for (let i = 0; i < newResponseArray.length; i++) {
-            const nextWord = newResponseArray[i];
-            delayPara(i, nextWord+" ");
-        }
-
-        setLoading(false);
-        setinput("");
     };
 
     const contextValue = {

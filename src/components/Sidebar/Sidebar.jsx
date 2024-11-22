@@ -23,7 +23,7 @@ const Sidebar = () => {
                                 className="recent-entry flex items-start gap-3 p-3 pr-10 rounded-[50px] text-[#282828] cursor-pointer hover:bg-slate-200"
                             >
                                 <img src={assets.message_icon} className="w-5" alt="" />
-                                <p>{item}...</p> 
+                                <p className='w-28'>{item}...</p> 
                             </div>
                         ))}
                     </div>
