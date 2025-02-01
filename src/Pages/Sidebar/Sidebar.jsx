@@ -1,6 +1,7 @@
 import { assets } from "@/assets/assets";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { Ghost } from "lucide-react";
 import { useState } from "react";
 
 const Sidebar = () => {
@@ -16,6 +17,7 @@ const Sidebar = () => {
       <div className="flex justify-between items-center p-6">
         <Button
           onClick={() => setIsExpanded(!isExpanded)}
+          variant="Ghost"
           className="rounded-md text-gray-600"
         >
           <img src={assets.menu_icon} alt="Menu Icon" className="w-5 h-5" />
