@@ -8,7 +8,7 @@ import Markdown from 'react-markdown';
 const MainContent = ({ showResult, resultData, loading, showTime, recentPrompt, setHiddenDiv, HiddenDiv }) => {
   return (
     <div
-      className={`main-container w-auto shadow-lg shadow-zinc-300  mx-5 h-[73vh] rounded-2xl ${!showResult ? "bg-slate-100" : "bg-gray-100"
+      className={`main-container w-auto mx-4 shadow-lg shadow-zinc-300   h-[73vh] rounded-2xl ${!showResult ? "bg-slate-100" : "bg-gray-100"
         } flex flex-col text-center`}
     >
       {showResult ? (

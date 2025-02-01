@@ -1,54 +1,45 @@
-import React, { useContext, useState } from "react";
-import { assets } from "../../assets/assets";
-import { Context } from "../../context/Context";
+import { assets } from "@/assets/assets";
+import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
+import { useState } from "react";
 
 const Sidebar = () => {
-  const [extend, setExtend] = useState(false);
-  const { onSent, prevPrompt, setRecentPrompt } = useContext(Context); // Default to empty array
-  return (
-    <div className="hidden  sidebar lg:inline-flex w-auto flex-col  justify-between bg-slate-100 h-full max-h-[84vh]; py-6 px-4 text-lg font-medium">
-      <div className="top">
-        <img
-          onClick={() => setExtend((prev) => !prev)}
-          src={assets.menu_icon}
-          className="menu w-5 block cursor-pointer"
-          alt=""
-        />
-        <div className="new-chat mt-10 inline-flex items-center gap-3 px-4 py-3 bg-slate-200 text-sm text-gray-600 cursor-pointer rounded-[50px]">
-          <img src={assets.plus_icon} className="w-5" alt="" />
-          {extend ? <p>New Chat</p> : null}
-        </div>
+  const [isExpanded, setIsExpanded] = useState(false);
 
-        {extend ? (
-          <div className="recent flex flex-col">
-            <p className="recent-title mt-8 mb-5">Recent</p>
-            {prevPrompt.map((item, index) => (
-              <div
-                key={index}
-                className="recent-entry flex items-start gap-3 p-3 pr-10 rounded-[50px] text-[#282828] cursor-pointer hover:bg-slate-200"
-              >
-                <img src={assets.message_icon} className="w-5" alt="" />
-                <p className="w-28">{item}...</p>
-              </div>
-            ))}
-          </div>
-        ) : null}
+  return (
+    <aside
+      className={cn(
+        "hidden sidebar transition-all duration-300 h-full lg:flex lg:flex-col bg-gray-100 shadow-lg",
+        isExpanded ? "w-64" : "w-28"
+      )}
+    >
+      <div className="flex justify-between items-center p-6">
+        <Button
+          onClick={() => setIsExpanded(!isExpanded)}
+          className="rounded-md text-gray-600"
+        >
+          <img src={assets.menu_icon} alt="Menu Icon" className="w-5 h-5" />
+        </Button>
       </div>
-      <div className="bottom flex flex-col">
-        <div className="bottom-item recent-entry flex items-start gap-3 p-3 pr-10 rounded-[50px] text-[#282828] cursor-pointer hover:bg-slate-200">
-          <img src={assets.question_icon} className="w-5" alt="" />
-          {extend ? <p>Help</p> : null}
-        </div>
-        <div className="bottom-item recent-entry flex items-start gap-3 p-3 pr-10 rounded-[50px] text-[#282828] cursor-pointer hover:bg-slate-200">
-          <img src={assets.history_icon} className="w-5" alt="" />
-          {extend ? <p>Activity</p> : null}
-        </div>
-        <div className="bottom-item recent-entry flex items-start gap-3 p-3 pr-10 rounded-[50px] text-[#282828] cursor-pointer hover:bg-slate-200">
-          <img src={assets.setting_icon} className="w-5" alt="" />
-          {extend ? <p>Settings</p> : null}
-        </div>
-      </div>
-    </div>
+      <nav className="flex flex-col gap-5 p-6">
+        <Button variant="ghost" className="justify-start text-gray-600">
+          <img src={assets.plus_icon} alt="New Chat" className="w-5 h-5 mr-2" />
+          {isExpanded && <span>New Chat</span>}
+        </Button>
+        <Button variant="ghost" className="justify-start text-gray-600">
+          <img
+            src={assets.history_icon}
+            alt="History"
+            className="w-5 h-5 mr-2"
+          />
+          {isExpanded && <span>History</span>}
+        </Button>
+        <Button variant="ghost" className="justify-start text-gray-600">
+          <img src={assets.setting_icon} alt="Settings" className="w-5 h-5 mr-2" />
+          {isExpanded && <span>Settings</span>}
+        </Button>
+      </nav>
+    </aside>
   );
 };
 

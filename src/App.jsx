@@ -1,12 +1,11 @@
-import { useState, useContext } from 'react';
-import Navbar from './components/Navbar';
-import MainContent from './components/MainContent';
-import BottomInputSection from './components/BottomInputSection';
-import Sidebar from './Pages/Sidebar/Sidebar';
-import { Context } from './context/Context';  // Import the Context
+import { useContext } from "react"
+import Navbar from "./components/Navbar"
+import MainContent from "./components/MainContent"
+import BottomInputSection from "./components/BottomInputSection"
+import Sidebar from "./Pages/Sidebar/Sidebar"
+import { Context } from "./context/Context"
 
 function App() {
-  // Get all context values using useContext hook
   const {
     input,
     setinput,
@@ -17,35 +16,31 @@ function App() {
     setRecentPrompt,
     setHiddenDiv,
     HiddenDiv,
-    onSent
-  } = useContext(Context);  // Access context values
+    onSent,
+  } = useContext(Context)
 
   return (
-    <div className="App h-screen grid grid-flow-row grid-rows-10">
-      <div className='w-full row-span-1'>
-        <Navbar />
-      </div>
-
-      <div className='flex w-full row-span-9'>
-
+    <div className="flex flex-col w-full h-screen bg-gray-100 ">
+      <Navbar />
+      <div className="flex flex-1 my-4   overflow-hidden">
         <Sidebar />
-        <div className='w-full flex flex-col justify-between'>
-          <MainContent
-            showResult={showResult}
-            resultData={resultData}
-            loading={loading}
-            recentPrompt={recentPrompt}
-            setHiddenDiv={setHiddenDiv}
-            HiddenDiv={HiddenDiv}
-          />
-
+        <main className="flex-1 flex flex-col ">
+          <div className="flex-1 overflow-y-auto">
+            <MainContent
+              showResult={showResult}
+              resultData={resultData}
+              loading={loading}
+              recentPrompt={recentPrompt}
+              setHiddenDiv={setHiddenDiv}
+              HiddenDiv={HiddenDiv}
+            />
+          </div>
           <BottomInputSection onSent={onSent} setinput={setinput} input={input} />
-
-        </div>
-
+        </main>
       </div>
     </div>
-  );
+  )
 }
 
-export default App;
+export default App
+
