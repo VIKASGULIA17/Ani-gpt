@@ -18,7 +18,7 @@ const ResultSection = ({ loading, resultData, showTime, recentPrompt, setHiddenD
   };
 
   return (
-    <div className="result py-0 px-[10%] min-w-full max-h-[70vh] overflow-y-scroll no-scrollbar">
+    <div className="result py-0 px-[10%] min-w-full max-h-[75vh] overflow-y-scroll no-scrollbar">
       <span className="result-title flex flex-col items-end">
         <div className="w-auto px-4 py-2 rounded-lg capitalize text-white lg:font-bold font-[400] text-[14px] lg:text-lg my-10 flex items-center bg-blue-500 gap-5">
           <img
@@ -26,7 +26,10 @@ const ResultSection = ({ loading, resultData, showTime, recentPrompt, setHiddenD
             alt="User Icon"
             className="w-15 h-5 block border-[1.5px] lg:w-10 lg:h-10 rounded-full lg:border-2 border-cyan-300"
           />
-          <p className="whitespace-nowrap">{recentPrompt}</p>
+          <p className="max-w-[45vw] max-h-[120px] text-start whitespace-normal break-words  overflow-y-auto overflow-x-hidden">
+            {recentPrompt}
+          </p>
+
         </div>
         <FaEdit
           onClick={() => setHiddenDiv(!HiddenDiv)}
@@ -50,12 +53,12 @@ const ResultSection = ({ loading, resultData, showTime, recentPrompt, setHiddenD
           <div>
             <div className="my-4 flex flex-col bg-[#83b9f03a] shadow-2xl shadow-zinc-300 text-black py-4 px-3 gap-4 rounded-xl">
               <Markdown
-                className="text-[13px] px-4 lg:text-[20px] min-w-full text-start leading-2 lg:pt-2 font-normal lg:leading-8"
+                className="text-[13px] px-4 lg:text-[20px] max-w-[80vw] whitespace-normal break-words overflow-y-auto overflow-x-hidden text-start leading-2 lg:pt-2 font-normal lg:leading-8"
                 components={{
                   code({ children, className }) {
                     const match = /language-(\w+)/.exec(className || "");
                     return match ? (
-                      <div className="relative group">
+                      <div className="relative group max-w-[45vw] overflow-x-auto">
                         {/* Copy Button */}
                         <button
                           onClick={() => handleCopy(children)}
@@ -72,6 +75,8 @@ const ResultSection = ({ loading, resultData, showTime, recentPrompt, setHiddenD
                             borderRadius: "0.5rem",
                             margin: "20px 10px",
                             backgroundColor: "#f9fafb",
+                            maxWidth: "45vw",
+                            overflowX: "auto", // Ensure code blocks are scrollable if needed
                           }}
                         >
                           {String(children).trim()}
@@ -85,6 +90,7 @@ const ResultSection = ({ loading, resultData, showTime, recentPrompt, setHiddenD
               >
                 {resultData}
               </Markdown>
+
             </div>
 
             <div className="flex justify-between">
