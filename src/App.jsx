@@ -20,9 +20,9 @@ function App() {
   } = useContext(Context)
 
   return (
-    <div className="flex flex-col w-full h-screen bg-gray-100 ">
+    <div className="flex flex-col w-full h-auto lg:h-screen bg-gray-100 ">
       <Navbar />
-      <div className="flex flex-1 my-4   overflow-hidden">
+      <div className="flex flex-1 my-4 overflow-hidden">
         <Sidebar />
         <main className="flex-1 flex flex-col ">
           <div className="flex-1 overflow-y-auto">

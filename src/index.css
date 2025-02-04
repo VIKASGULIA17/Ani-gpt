@@ -83,3 +83,16 @@
         --sidebar-ring: 217.2 91.2% 59.8%;
     }
 }
+
+
+/* Hide scrollbar but allow scrolling */
+::-webkit-scrollbar {
+    display: none;
+  }
+  
+  /* Prevent layout shift */
+  html, body {
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE and Edge */
+  }
+  

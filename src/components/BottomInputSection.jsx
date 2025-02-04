@@ -9,7 +9,7 @@ import { Input } from "@/components/ui/input"
 const BottomInputSection = ({ onSent, setinput, input }) => {
   return (
     
-      <div className="w-full  mx-auto px-2 py-3">
+      <div className="w-full mx-auto px-2 pb-8 lg:py-3">
         <div className="flex items-center gap-2">
           <div className="relative flex-grow">
                 {/* // Add microphone functionality here */}

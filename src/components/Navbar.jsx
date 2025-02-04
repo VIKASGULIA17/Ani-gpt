@@ -1,73 +1,68 @@
+import { useState } from "react";
 import { assets } from "../assets/assets";
 
-
-
-
 const Navbar = () => {
+  const [isOpen, setIsOpen] = useState(false);
+
   return (
-    <div className="nav flex items-center justify-between text-xl lg:text-2xl p-2 lg:p-5 text-gray-600">
-      <img src={assets.menu_icon} className="w-7 h-7 lg:hidden" alt="" />
-      <p>Ani-gpt</p>
-      <img
-        className="h-8 w-8  border-[1px]  lg:w-12 lg:h-12 lg:border-2 border-black rounded-full"
-        src={assets.user_icon}
-        alt="User Icon"
-      />
-    </div>
+    <nav className="relative bg-white shadow-md z-20">
+      <div className="flex items-center justify-between text-xl lg:text-2xl p-2 lg:p-5 text-gray-600">
+        {/* Mobile Menu Button */}
+        <button onClick={() => setIsOpen(!isOpen)} className="lg:hidden">
+          <img src={assets.menu_icon} className="w-7 h-7" alt="Menu Icon" />
+        </button>
+        {/* Logo */}
+        <p>Ani-GPT</p>
+        {/* User Profile */}
+        <div className="hidden lg:flex space-x-6">
+        <a href="/" className="text-gray-900 text-lg py-1 hover:text-blue-500">
+          Home
+        </a>
+        <a href="/about" className="text-gray-900 text-lg py-1 hover:text-blue-500">
+          About
+        </a>
+        </div>
+        <img
+          className="h-8 w-8 border-[1px] lg:w-12 lg:h-12 lg:border-2 border-black rounded-full"
+          src={assets.user_icon}
+          alt="User Icon"
+          />
+      </div>
+
+      {/* Mobile Sidebar Menu */}
+      <div
+        className={`fixed top-0 left-0 h-full w-[40vw] bg-white shadow-lg transform transition-transform duration-300 ${
+          isOpen ? "translate-x-0" : "-translate-x-full"
+        } lg:hidden`}
+      >
+        {/* Close Button */}
+        <button
+          onClick={() => setIsOpen(false)}
+          className="absolute top-4 right-4 text-gray-700 text-2xl"
+        >
+          ✕
+        </button>
+
+        <div className="flex flex-col mt-16 space-y-4 text-lg">
+          <a
+            href="/"
+            className="px-6 py-3 text-gray-900 hover:bg-blue-500 hover:text-white"
+          >
+            Home
+          </a>
+          <a
+            href="/about"
+            className="px-6 py-3 text-gray-900 hover:bg-blue-500 hover:text-white"
+          >
+            About
+          </a>
+        </div>
+      </div>
+
+      {/* Desktop Menu */}
+      
+    </nav>
   );
 };
 
 export default Navbar;
-
-
-
-// import { Button } from "@/components/ui/button";
-// import { Menu } from "@/components/ui/menu";
-
-// const Navbar = () => {
-//   return (
-//     <nav className="nav flex items-center justify-between bg-white shadow-md px-4 py-3 lg:px-8">
-//       <Menu>
-//         <Menu.Button className="lg:hidden">
-//           <img src="/menu-icon.svg" alt="Menu Icon" className="w-7 h-7" />
-//         </Menu.Button>
-//         <Menu.Items className="absolute left-0 mt-2 w-56 rounded-md bg-white shadow-lg">
-//           <Menu.Item>
-//             {({ active }) => (
-//               <a
-//                 className={`${
-//                   active ? "bg-blue-500 text-white" : "text-gray-900"
-//                 } block px-4 py-2 text-sm`}
-//                 href="/"
-//               >
-//                 Home
-//               </a>
-//             )}
-//           </Menu.Item>
-//           <Menu.Item>
-//             {({ active }) => (
-//               <a
-//                 className={`${
-//                   active ? "bg-blue-500 text-white" : "text-gray-900"
-//                 } block px-4 py-2 text-sm`}
-//                 href="/about"
-//               >
-//                 About
-//               </a>
-//             )}
-//           </Menu.Item>
-//         </Menu.Items>
-//       </Menu>
-//       <p className="text-lg font-semibold text-gray-800">Ani-GPT</p>
-//       <Button variant="ghost" className="rounded-full">
-//         <img
-//           className="w-8 h-8 lg:w-12 lg:h-12 rounded-full border border-gray-300"
-//           src="/user-icon.svg"
-//           alt="User Icon"
-//         />
-//       </Button>
-//     </nav>
-//   );
-// };
-
-// export default Navbar;

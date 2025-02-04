@@ -26,7 +26,7 @@ const ResultSection = ({ loading, resultData, showTime, recentPrompt, setHiddenD
             alt="User Icon"
             className="w-15 h-5 block border-[1.5px] lg:w-10 lg:h-10 rounded-full lg:border-2 border-cyan-300"
           />
-          <p className="max-w-[45vw] max-h-[120px] text-start whitespace-normal break-words  overflow-y-auto overflow-x-hidden">
+          <p className="max-w-[45vw] max-h-[120px] text-[16px] text-start whitespace-normal break-words  overflow-y-auto overflow-x-hidden">
             {recentPrompt}
           </p>
 
@@ -45,26 +45,26 @@ const ResultSection = ({ loading, resultData, showTime, recentPrompt, setHiddenD
               .map((_, index) => (
                 <hr
                   key={index}
-                  className="border-4 border-none bg-gradient-to-r from-blue-500 via-white to-blue-300 bg-custom-size h-5 animate-loader"
+                  className="border-4 border-none bg-gradient-to-r from-[#83B9F0] via-white to-[#65aaef] bg-custom-size h-5 animate-loader"
                 />
               ))}
           </div>
         ) : (
           <div>
-            <div className="my-4 flex flex-col bg-[#83b9f03a] shadow-2xl shadow-zinc-300 text-black py-4 px-3 gap-4 rounded-xl">
+            <div className="my-1 flex flex-col bg-[#83b9f03a] shadow-2xl shadow-zinc-300 text-black py-4 px-2 gap-4 rounded-xl">
               <Markdown
-                className="text-[13px] px-4 lg:text-[20px] max-w-[80vw] whitespace-normal break-words overflow-y-auto overflow-x-hidden text-start leading-2 lg:pt-2 font-normal lg:leading-8"
+                className="text-[16px] px-4 lg:text-[20px] max-w-[80vw] whitespace-normal break-words overflow-y-auto overflow-x-hidden text-start leading-2 lg:pt-2 font-normal lg:leading-8"
                 components={{
                   code({ children, className }) {
                     const match = /language-(\w+)/.exec(className || "");
                     return match ? (
-                      <div className="relative group max-w-[45vw] overflow-x-auto">
+                      <div className="relative group max-w-[60vw] overflow-x-auto">
                         {/* Copy Button */}
                         <button
                           onClick={() => handleCopy(children)}
-                          className="absolute top-2 right-2 bg-gray-200 text-gray-700 p-1 rounded-md text-xs opacity-0 group-hover:opacity-100 transition"
+                          className="absolute top-4 right-2 bg-gray-200 text-gray-700 p-1 rounded-md text-xs opacity-0 group-hover:opacity-100 transition"
                         >
-                          {copied ? "Copied!" : <MdContentCopy />}
+                          {copied ? "Copied!" : <MdContentCopy className="m-2 rounded-full"/>}
                         </button>
 
                         <SyntaxHighlighter
@@ -75,7 +75,7 @@ const ResultSection = ({ loading, resultData, showTime, recentPrompt, setHiddenD
                             borderRadius: "0.5rem",
                             margin: "20px 10px",
                             backgroundColor: "#f9fafb",
-                            maxWidth: "45vw",
+                            maxWidth: "60vw",
                             overflowX: "auto", // Ensure code blocks are scrollable if needed
                           }}
                         >
@@ -97,6 +97,12 @@ const ResultSection = ({ loading, resultData, showTime, recentPrompt, setHiddenD
               <div className="flex gap-4 py-2">
                 <AiOutlineLike className="cursor-pointer text-sm" />
                 <HiOutlineSpeakerWave className="cursor-pointer" />
+                <button
+                          onClick={() => handleCopy(resultData)}
+                          className=" "
+                        >
+                          <MdContentCopy className="rounded-full"/>
+                        </button>
                 <img
                   src={assets.Rotate_arrow}
                   alt="Rotate Arrow"
