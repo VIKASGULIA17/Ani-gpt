@@ -41,7 +41,7 @@ function App() {
   const isMainChatPage = location.pathname === '/';
 
   return (
-    <div className={`flex flex-col w-full ${isMainChatPage ? 'h-screen overflow-hidden' : 'min-h-screen overflow-auto'} bg-gray-50`}>
+    <div className={`flex flex-col w-full ${isMainChatPage ? 'h-screen overflow-hidden' : 'min-h-screen overflow-auto'} bg-gray-50 relative`}>
       {!isAuthPage && <Navbar />}
       <Routes>
         <Route path="/login" element={<Login />} />
@@ -51,11 +51,11 @@ function App() {
         <Route
           path="/"
           element={
-            <div className="flex flex-1 h-[calc(100vh-64px)] overflow-hidden">
-              <div className="hidden md:block">
+            <div className="flex flex-1 h-[calc(100vh-64px)] overflow-hidden relative">
+              <div className="hidden md:block relative z-10">
                 <Sidebar />
               </div>
-              <main className="flex-1 flex flex-col relative">
+              <main className="flex-1 flex flex-col relative z-0">
                 <div className="flex-1 overflow-y-auto pb-20 md:pb-24">
                   <div className="max-w-4xl mx-auto px-4">
                     <MainContent
@@ -69,7 +69,7 @@ function App() {
                   </div>
                 </div>
                 {isMainChatPage && (
-                  <div className="absolute bottom-0 left-0 right-0 bg-white border-t border-gray-200">
+                  <div className="absolute bottom-0 left-0 right-0 bg-white border-t border-gray-200 z-10">
                     <div className="max-w-4xl mx-auto px-4">
                       <BottomInputSection onSent={onSent} setinput={setinput} input={input} />
                     </div>

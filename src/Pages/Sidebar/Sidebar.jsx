@@ -1,8 +1,8 @@
 import { useContext } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Context } from "../../context/Context";
 import { assets } from "../../assets/assets";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { 
   Home, 
   History, 
@@ -15,12 +15,15 @@ import {
 } from "lucide-react";
 import { useState } from "react";
 import { Settings as SettingsModal } from "../../components/ui/settings";
+import { Help } from "../../components/ui/help";
 
 const Sidebar = () => {
-  const { isAuthenticated, setIsAuthenticated, startNewChat } = useContext(Context);
+  const { isAuthenticated, setIsAuthenticated, startNewChat, clearChat } = useContext(Context);
   const location = useLocation();
+  const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+  const [isHelpOpen, setIsHelpOpen] = useState(false);
 
   const handleLogout = () => {
     setIsAuthenticated(false);
@@ -31,12 +34,48 @@ const Sidebar = () => {
     setIsOpen(false); // Close mobile menu if open
   };
 
-  const navItems = [
-    { icon: <Plus className="w-5 h-5" />, label: "New Chat", path: "/new", onClick: handleNewChat },
-    { icon: <Home className="w-5 h-5" />, label: "Home", path: "/" },
-    { icon: <History className="w-5 h-5" />, label: "History", path: "/history" },
-    { icon: <Settings className="w-5 h-5" />, label: "Settings", onClick: () => setIsSettingsOpen(true) },
-    { icon: <HelpCircle className="w-5 h-5" />, label: "Help", path: "/help" },
+  const handleSettingsClick = () => {
+    setIsSettingsOpen(true);
+    setIsOpen(false); // Close mobile menu if open
+  };
+
+  const handleHelpClick = () => {
+    setIsHelpOpen(true);
+    setIsOpen(false); // Close mobile menu if open
+  };
+
+  const mobileNavItems = [
+    {
+      label: "New Chat",
+      icon: <Plus className="w-5 h-5" />,
+      onClick: startNewChat
+    },
+    {
+      label: "Home",
+      icon: <Home className="w-5 h-5" />,
+      path: "/",
+      onClick: startNewChat
+    },
+    {
+      label: "History",
+      icon: <History className="w-5 h-5" />,
+      path: "/history"
+    },
+    {
+      label: "Settings",
+      icon: <Settings className="w-5 h-5" />,
+      onClick: () => setIsSettingsOpen(true)
+    },
+    {
+      label: "Help",
+      icon: <HelpCircle className="w-5 h-5" />,
+      onClick: () => setIsHelpOpen(true)
+    },
+    {
+      label: "Clear Chat",
+      icon: <LogOut className="w-5 h-5" />,
+      onClick: clearChat
+    }
   ];
 
   return (
@@ -61,7 +100,7 @@ const Sidebar = () => {
             <img src={assets.logo} alt="Logo" className="w-32 h-8" />
           </div>
           <nav className="flex-1 px-4 space-y-2">
-            {navItems.map((item) => (
+            {mobileNavItems.map((item) => (
               item.path ? (
                 <Link
                   key={item.path}
@@ -84,10 +123,7 @@ const Sidebar = () => {
               ) : (
                 <button
                   key={item.label}
-                  onClick={() => {
-                    item.onClick();
-                    setIsOpen(false);
-                  }}
+                  onClick={item.onClick}
                   className="flex items-center gap-3 w-full px-4 py-3 text-gray-600 hover:bg-gray-50 rounded-xl transition-all duration-200"
                 >
                   {item.icon}
@@ -119,7 +155,7 @@ const Sidebar = () => {
           <img src={assets.logo} alt="Logo" className="w-32 h-8" />
         </div>
         <nav className="flex-1 px-4 space-y-2">
-          {navItems.map((item) => (
+          {mobileNavItems.map((item) => (
             item.path ? (
               <Link
                 key={item.path}
@@ -142,10 +178,7 @@ const Sidebar = () => {
             ) : (
               <button
                 key={item.label}
-                onClick={() => {
-                  item.onClick();
-                  setIsOpen(false);
-                }}
+                onClick={item.onClick}
                 className="flex items-center gap-3 w-full px-4 py-3 text-gray-600 hover:bg-gray-50 rounded-xl transition-all duration-200"
               >
                 {item.icon}
@@ -176,8 +209,13 @@ const Sidebar = () => {
         />
       )}
 
-      {/* Settings Modal */}
-      <SettingsModal isOpen={isSettingsOpen} onClose={() => setIsSettingsOpen(false)} />
+      {/* Modals */}
+      <div className="fixed inset-0 z-[100] pointer-events-none">
+        <div className="pointer-events-auto">
+          <SettingsModal isOpen={isSettingsOpen} onClose={() => setIsSettingsOpen(false)} />
+          <Help isOpen={isHelpOpen} onClose={() => setIsHelpOpen(false)} />
+        </div>
+      </div>
     </>
   );
 };

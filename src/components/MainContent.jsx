@@ -17,7 +17,7 @@ const MainContent = ({ showResult, resultData, loading, showTime, recentPrompt, 
     if (chatContainerRef.current) {
       chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
     }
-  }, [chatHistory, loading]);
+  }, [chatHistory, loading, resultData]);
   
   const suggestions = [
     {
@@ -46,7 +46,7 @@ const MainContent = ({ showResult, resultData, loading, showTime, recentPrompt, 
     <Card
       className={`w-full h-[79vh] lg:h-[75vh] shadow-lg shadow-zinc-300 rounded-2xl ${
         !showResult && !selectedChat ? "bg-gradient-to-b from-gray-50 to-white" : "bg-white"
-      } flex flex-col overflow-hidden`}
+      } flex flex-col overflow-hidden relative z-0`}
     >
       <AnimatePresence mode="wait">
         {showResult || selectedChat ? (
@@ -59,9 +59,9 @@ const MainContent = ({ showResult, resultData, loading, showTime, recentPrompt, 
             transition={{ duration: 0.3 }}
           >
             <div className="flex flex-col max-w-4xl mx-auto">
-              {selectedChat ? (
+              {currentChat ? (
                 <>
-                  {selectedChat.messages.map((message, index) => (
+                  {currentChat.messages.map((message, index) => (
                     <motion.div
                       key={message.timestamp}
                       initial={{ opacity: 0, y: 20 }}
@@ -78,6 +78,22 @@ const MainContent = ({ showResult, resultData, loading, showTime, recentPrompt, 
                       />
                     </motion.div>
                   ))}
+                  {loading && (
+                    <motion.div
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.3 }}
+                    >
+                      <ResultSection
+                        loading={true}
+                        resultData={resultData}
+                        showTime={showTime}
+                        recentPrompt={recentPrompt}
+                        setHiddenDiv={setHiddenDiv}
+                        HiddenDiv={HiddenDiv}
+                      />
+                    </motion.div>
+                  )}
                 </>
               ) : (
                 <ResultSection

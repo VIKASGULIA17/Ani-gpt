@@ -53,7 +53,7 @@ const ResultSection = ({ loading, resultData, showTime, recentPrompt, setHiddenD
 
   return (
     <motion.div
-      className="w-full mb-4"
+      className="w-full max-w-[95vw] mx-auto mb-4"
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
@@ -66,12 +66,12 @@ const ResultSection = ({ loading, resultData, showTime, recentPrompt, setHiddenD
         transition={{ duration: 0.3, delay: 0.2 }}
       >
         <motion.div 
-          className="w-auto sm:max-w-[85%] bg-gradient-to-r from-blue-600 to-purple-600 text-white px-4 sm:px-6 py-2.5 sm:py-3 rounded-2xl shadow-lg cursor-pointer hover:opacity-90 transition-opacity"
+          className="w-full max-w-[85%] bg-gradient-to-r from-blue-600 to-purple-600 text-white px-3 sm:px-6 py-2.5 sm:py-3 rounded-2xl shadow-lg cursor-pointer hover:opacity-90 transition-opacity"
           whileHover={{ scale: 1.02 }}
           whileTap={{ scale: 0.98 }}
           onClick={() => handleQuestionClick(recentPrompt)}
         >
-          <div className="flex items-start gap-3">
+          <div className="flex items-start gap-2 sm:gap-3">
             <img
               src={assets.user_icon}
               alt="User"
@@ -113,62 +113,74 @@ const ResultSection = ({ loading, resultData, showTime, recentPrompt, setHiddenD
         </div>
         
         <motion.div 
-          className="w-full sm:max-w-[85%] bg-white rounded-2xl shadow-lg border border-gray-100 p-3 sm:p-4"
+          className="w-full max-w-[85%] bg-white rounded-2xl shadow-lg border border-gray-100 p-2 sm:p-4"
           initial={{ scale: 0.98 }}
           animate={{ scale: 1 }}
           transition={{ duration: 0.2 }}
         >
-          <Markdown
-            className="text-[14px] sm:text-[15px] whitespace-pre-wrap break-words text-gray-800 leading-relaxed"
-            components={{
-              code({ node, inline, className, children, ...props }) {
-                const match = /language-(\w+)/.exec(className || "");
-                const isCodeBlock = !inline && match;
+          <div className="w-full">
+            <Markdown
+              className="text-[14px] sm:text-[15px] whitespace-pre-wrap break-words text-gray-800 leading-relaxed"
+              components={{
+                code({ node, inline, className, children, ...props }) {
+                  const match = /language-(\w+)/.exec(className || "");
+                  const isCodeBlock = !inline && match;
 
-                return isCodeBlock ? (
-                  <motion.div 
-                    className="relative group my-2 sm:my-3"
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.3 }}
-                  >
-                    <div className="relative">
-                      <motion.button
-                        onClick={() => handleCopy(children)}
-                        className="absolute top-1 right-1 bg-gray-100 text-gray-700 p-1 sm:p-1.5 rounded-md text-xs opacity-0 group-hover:opacity-100 transition-all duration-200 hover:bg-gray-200"
-                        whileHover={{ scale: 1.1 }}
-                        whileTap={{ scale: 0.9 }}
-                      >
-                        {copied ? "Copied!" : <MdContentCopy className="w-3 h-3"/>}
-                      </motion.button>
-                      <SyntaxHighlighter
-                        language={match[1]}
-                        style={atelierCaveLight}
-                        PreTag="div"
-                        customStyle={{
-                          borderRadius: "0.5rem",
-                          padding: "0.75rem",
-                          margin: "0.25rem 0",
-                          backgroundColor: "#f8fafc",
-                          border: "1px solid #e2e8f0",
-                          fontSize: "0.875rem"
-                        }}
-                        {...props}
-                      >
-                        {String(children).trim()}
-                      </SyntaxHighlighter>
-                    </div>
-                  </motion.div>
-                ) : (
-                  <code className="bg-gray-100 px-1 py-0.5 rounded text-sm font-mono" {...props}>
-                    {children}
-                  </code>
-                );
-              }
-            }}
-          >
-            {resultData}
-          </Markdown>
+                  return isCodeBlock ? (
+                    <motion.div 
+                      className="relative group my-2 sm:my-3 w-full"
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.3 }}
+                    >
+                      <div className="relative w-full">
+                        <motion.button
+                          onClick={() => handleCopy(children)}
+                          className="absolute top-1 right-1 bg-gray-100 text-gray-700 p-1 sm:p-1.5 rounded-md text-xs opacity-0 group-hover:opacity-100 transition-all duration-200 hover:bg-gray-200"
+                          whileHover={{ scale: 1.1 }}
+                          whileTap={{ scale: 0.9 }}
+                        >
+                          {copied ? "Copied!" : <MdContentCopy className="w-3 h-3"/>}
+                        </motion.button>
+                        <div className="w-full overflow-x-auto">
+                          <div className="w-full">
+                            <SyntaxHighlighter
+                              language={match[1]}
+                              style={atelierCaveLight}
+                              PreTag="div"
+                              customStyle={{
+                                borderRadius: "0.5rem",
+                                padding: "0.75rem",
+                                margin: "0.25rem 0",
+                                backgroundColor: "#f8fafc",
+                                border: "1px solid #e2e8f0",
+                                fontSize: "0.875rem",
+                                overflowX: "auto",
+                                maxWidth: "100%",
+                                width: "100%",
+                                whiteSpace: "pre-wrap",
+                                wordBreak: "break-word",
+                                overflowWrap: "break-word"
+                              }}
+                              {...props}
+                            >
+                              {String(children).trim()}
+                            </SyntaxHighlighter>
+                          </div>
+                        </div>
+                      </div>
+                    </motion.div>
+                  ) : (
+                    <code className="bg-gray-100 px-1 py-0.5 rounded text-sm font-mono break-all" {...props}>
+                      {children}
+                    </code>
+                  );
+                }
+              }}
+            >
+              {resultData}
+            </Markdown>
+          </div>
 
           <div className="flex items-center justify-between mt-3 pt-3 border-t border-gray-100">
             <div className="flex items-center gap-2 sm:gap-3">
