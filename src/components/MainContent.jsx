@@ -108,10 +108,12 @@ const MainContent = ({ showResult, resultData, loading, showTime, recentPrompt, 
             </div>
           </motion.div>
         ) : (
-          <div className="flex flex-col items-center justify-center min-h-[calc(100vh-200px)]">
-            <h1 className="text-2xl font-bold text-gray-800 mb-2">Welcome to AI Chat</h1>
-            <p className="text-gray-500 mb-8">Ask me anything or try one of these questions</p>
-            <HomeCards />
+          <div className="flex-1 overflow-y-auto scroll-smooth px-4 py-6">
+            <div className="flex flex-col items-center justify-center min-h-full py-8">
+              <h1 className="text-2xl font-bold text-gray-800 mb-2">Welcome to AI Chat</h1>
+              <p className="text-gray-500 mb-8">Ask me anything or try one of these questions</p>
+              <HomeCards />
+            </div>
           </div>
         )}
       </AnimatePresence>
