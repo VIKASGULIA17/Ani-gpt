@@ -1,7 +1,7 @@
 import * as React from "react"
 import { Slot } from "@radix-ui/react-slot"
 import { cva } from "class-variance-authority";
-import { PanelLeft } from "lucide-react"
+import { PanelLeft, Settings as SettingsIcon } from "lucide-react"
 
 import { useIsMobile } from "@/hooks/use-mobile"
 import { cn } from "@/lib/utils"
@@ -10,6 +10,7 @@ import { Input } from "@/components/ui/input"
 import { Separator } from "@/components/ui/separator"
 import { Sheet, SheetContent } from "@/components/ui/sheet"
 import { Skeleton } from "@/components/ui/skeleton"
+import { Settings } from "@/components/ui/settings"
 import {
   Tooltip,
   TooltipContent,
@@ -303,12 +304,32 @@ const SidebarHeader = React.forwardRef(({ className, ...props }, ref) => {
 SidebarHeader.displayName = "SidebarHeader"
 
 const SidebarFooter = React.forwardRef(({ className, ...props }, ref) => {
+  const [isSettingsOpen, setIsSettingsOpen] = React.useState(false)
+
   return (
-    (<div
-      ref={ref}
-      data-sidebar="footer"
-      className={cn("flex flex-col gap-2 p-2", className)}
-      {...props} />)
+    <>
+      <div
+        ref={ref}
+        className={cn("mt-auto flex items-center gap-2 p-2", className)}
+        {...props}>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <Button
+              variant="ghost"
+              size="icon"
+              className="h-8 w-8"
+              onClick={() => setIsSettingsOpen(true)}>
+              <SettingsIcon className="h-4 w-4" />
+              <span className="sr-only">Settings</span>
+            </Button>
+          </TooltipTrigger>
+          <TooltipContent side="right" className="flex items-center gap-2">
+            <span>Settings</span>
+          </TooltipContent>
+        </Tooltip>
+      </div>
+      <Settings isOpen={isSettingsOpen} onClose={() => setIsSettingsOpen(false)} />
+    </>
   );
 })
 SidebarFooter.displayName = "SidebarFooter"
