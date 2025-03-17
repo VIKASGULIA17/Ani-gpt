@@ -8,13 +8,21 @@ import {
   GoogleGenerativeAI,
   HarmCategory,
   HarmBlockThreshold,
-} from"@google/generative-ai";
+} from "@google/generative-ai";
 
-const apiKey = "AIzaSyC_xKFSEqkACSe4VXoF0QagAJD4BWfhs7Q";
+const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
+
+if (!apiKey) {
+  throw new Error("Missing Gemini API key. Please check your environment variables.");
+}
 
 const genAI = new GoogleGenerativeAI(apiKey);
 
 async function run(prompt) {
+  if (!prompt) {
+    throw new Error("Prompt is required");
+  }
+
   try {
     const model = await genAI.getGenerativeModel({
       model: "gemini-1.5-flash",
@@ -33,12 +41,18 @@ async function run(prompt) {
       history: [], // You can populate this array with previous messages if needed
     });
 
-    const result = await chatSession.sendMessage(prompt);  // Replace with actual input
-    // console.log(result.response.text());
-    return result.response.text();  // Ensure correct response access based on the SDK's response structure
+    const result = await chatSession.sendMessage(prompt);
+    const response = result.response.text();
+    
+    if (!response) {
+      throw new Error("No response received from the model");
+    }
+
+    return response;
 
   } catch (error) {
     console.error("Error in running the Generative AI model:", error);
+    throw new Error("Failed to process your request. Please try again.");
   }
 }
 
