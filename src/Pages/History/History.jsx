@@ -5,7 +5,7 @@ import { Trash2, MessageSquare } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
 const History = () => {
-  const { chatHistory, setSelectedChat, deleteChat } = useContext(Context);
+  const { chatHistory, setSelectedChat, deleteChat, setCurrentChat } = useContext(Context);
   const navigate = useNavigate();
 
   const formatDate = (date) => {
@@ -23,18 +23,28 @@ const History = () => {
   };
 
   const handleChatClick = (index) => {
-    setSelectedChat(index);
-    navigate("/");
+    console.log("Chat clicked:", index);
+    const selectedChat = chatHistory[index];
+    console.log("Selected chat:", selectedChat);
+    
+    if (selectedChat) {
+      // First set the current chat
+      setCurrentChat(selectedChat);
+      // Then set the selected chat index
+      setSelectedChat(index);
+      // Finally navigate to the chat page
+      navigate("/new-chat");
+    }
   };
 
   return (
     <div className="max-w-4xl mx-auto p-6">
-      <h1 className="text-2xl font-bold text-gray-800 mb-6">Chat History</h1>
+      <h1 className="text-2xl font-bold text-gray-800 dark:text-gray-100 mb-6">Chat History</h1>
       
       {chatHistory.length === 0 ? (
         <div className="text-center py-12">
           <MessageSquare className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-          <p className="text-gray-500">No chat history yet</p>
+          <p className="text-gray-500 dark:text-gray-400">No chat history yet</p>
         </div>
       ) : (
         <div className="space-y-4">
@@ -44,15 +54,15 @@ const History = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.3, delay: index * 0.1 }}
-              className="bg-white rounded-xl shadow-sm border border-gray-100 p-4 hover:shadow-md transition-shadow cursor-pointer"
+              className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-4 hover:shadow-md transition-shadow cursor-pointer"
               onClick={() => handleChatClick(index)}
             >
               <div className="flex items-start justify-between">
                 <div className="flex-1">
-                  <h3 className="text-gray-800 font-medium mb-1 line-clamp-2">
+                  <h3 className="text-gray-800 dark:text-gray-100 font-medium mb-1 line-clamp-2">
                     {chat.messages[0]?.prompt || "New Chat"}
                   </h3>
-                  <p className="text-sm text-gray-500">
+                  <p className="text-sm text-gray-500 dark:text-gray-400">
                     {formatDate(chat.messages[0]?.timestamp)}
                   </p>
                 </div>

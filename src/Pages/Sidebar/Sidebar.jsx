@@ -83,9 +83,9 @@ const Sidebar = () => {
       {/* Mobile Menu Button */}
       <button 
         onClick={() => setIsOpen(!isOpen)}
-        className="fixed top-4 left-4 z-50 md:hidden bg-white p-2 rounded-lg shadow-lg"
+        className="fixed top-4 left-4 z-50 md:hidden bg-white dark:bg-gray-800 p-2 rounded-lg shadow-lg dark:shadow-gray-900"
       >
-        {isOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+        {isOpen ? <X className="w-6 h-6 dark:text-gray-300" /> : <Menu className="w-6 h-6 dark:text-gray-300" />}
       </button>
 
       {/* Mobile Sidebar */}
@@ -93,13 +93,13 @@ const Sidebar = () => {
         initial={{ x: "-100%" }}
         animate={{ x: isOpen ? 0 : "-100%" }}
         transition={{ type: "spring", damping: 20 }}
-        className="fixed inset-y-0 left-0 z-40 w-64 bg-white shadow-lg md:hidden"
+        className="fixed inset-y-0 left-0 z-40 w-64 bg-white dark:bg-black shadow-lg dark:shadow-gray-900 md:hidden"
       >
         <div className="flex flex-col h-full">
-          <div className="p-6">
-            <img src={assets.logo} alt="Logo" className="w-32 h-8" />
+          <div className="p-6 border-b dark:border-gray-800">
+            <h1 className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">Ani-GPT</h1>
           </div>
-          <nav className="flex-1 px-4 space-y-2">
+          <nav className="flex-1 px-4 space-y-2 pt-6">
             {mobileNavItems.map((item) => (
               item.path ? (
                 <Link
@@ -114,7 +114,7 @@ const Sidebar = () => {
                   className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 ${
                     location.pathname === item.path
                       ? "bg-gradient-to-r from-blue-600 to-purple-600 text-white"
-                      : "text-gray-600 hover:bg-gray-50"
+                      : "text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800"
                   }`}
                 >
                   {item.icon}
@@ -124,7 +124,7 @@ const Sidebar = () => {
                 <button
                   key={item.label}
                   onClick={item.onClick}
-                  className="flex items-center gap-3 w-full px-4 py-3 text-gray-600 hover:bg-gray-50 rounded-xl transition-all duration-200"
+                  className="flex items-center gap-3 w-full px-4 py-3 text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-xl transition-all duration-200"
                 >
                   {item.icon}
                   <span className="font-medium">{item.label}</span>
@@ -132,10 +132,10 @@ const Sidebar = () => {
               )
             ))}
           </nav>
-          <div className="p-4 border-t">
+          <div className="p-4 border-t dark:border-gray-800">
             <button
               onClick={handleLogout}
-              className="flex items-center gap-3 w-full px-4 py-3 text-red-500 hover:bg-red-50 rounded-xl transition-all duration-200"
+              className="flex items-center gap-3 w-full px-4 py-3 text-red-500 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-xl transition-all duration-200"
             >
               <LogOut className="w-5 h-5" />
               <span className="font-medium">Logout</span>
@@ -149,12 +149,12 @@ const Sidebar = () => {
         initial={{ x: -100, opacity: 0 }}
         animate={{ x: 0, opacity: 1 }}
         transition={{ duration: 0.3 }}
-        className="hidden md:flex flex-col w-64 bg-white shadow-lg h-full"
+        className="hidden md:flex flex-col w-64 bg-white dark:bg-black shadow-lg dark:shadow-gray-900 h-full"
       >
-        <div className="p-6">
-          <img src={assets.logo} alt="Logo" className="w-32 h-8" />
+        <div className="p-6 border-b dark:border-gray-800">
+          <h1 className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">Ani-GPT</h1>
         </div>
-        <nav className="flex-1 px-4 space-y-2">
+        <nav className="flex-1 px-4 space-y-2 pt-6">
           {mobileNavItems.map((item) => (
             item.path ? (
               <Link
@@ -169,7 +169,7 @@ const Sidebar = () => {
                 className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 ${
                   location.pathname === item.path
                     ? "bg-gradient-to-r from-blue-600 to-purple-600 text-white"
-                    : "text-gray-600 hover:bg-gray-50"
+                    : "text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800"
                 }`}
               >
                 {item.icon}
@@ -179,7 +179,7 @@ const Sidebar = () => {
               <button
                 key={item.label}
                 onClick={item.onClick}
-                className="flex items-center gap-3 w-full px-4 py-3 text-gray-600 hover:bg-gray-50 rounded-xl transition-all duration-200"
+                className="flex items-center gap-3 w-full px-4 py-3 text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-xl transition-all duration-200"
               >
                 {item.icon}
                 <span className="font-medium">{item.label}</span>
@@ -187,10 +187,10 @@ const Sidebar = () => {
             )
           ))}
         </nav>
-        <div className="p-4 border-t">
+        <div className="p-4 border-t dark:border-gray-800">
           <button
             onClick={handleLogout}
-            className="flex items-center gap-3 w-full px-4 py-3 text-red-500 hover:bg-red-50 rounded-xl transition-all duration-200"
+            className="flex items-center gap-3 w-full px-4 py-3 text-red-500 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-xl transition-all duration-200"
           >
             <LogOut className="w-5 h-5" />
             <span className="font-medium">Logout</span>
@@ -204,7 +204,7 @@ const Sidebar = () => {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          className="fixed inset-0 bg-black bg-opacity-50 z-30 md:hidden"
+          className="fixed inset-0 bg-black/50 backdrop-blur-sm z-30 md:hidden"
           onClick={() => setIsOpen(false)}
         />
       )}

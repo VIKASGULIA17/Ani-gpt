@@ -63,7 +63,7 @@ const BottomInputSection = ({ onSent, setinput, input }) => {
               value={input}
               onChange={(e) => setinput(e.target.value)}
               onKeyPress={handleKeyPress}
-              className="px-6 py-6 h-12 lg:h-14 pr-12 lg:pr-16 text-base lg:text-lg rounded-2xl shadow-lg border-2 border-gray-100 focus:border-blue-200 focus:ring-2 focus:ring-blue-100 transition-all duration-200"
+              className="px-6 py-6 h-12 lg:h-14 pr-12 lg:pr-16 text-base lg:text-lg rounded-2xl shadow-lg border-2 border-gray-100 dark:border-gray-700 focus:border-blue-200 dark:focus:border-purple-400 focus-visible:ring-0 focus-visible:ring-offset-0 focus:ring-2 focus:ring-blue-100 dark:focus:ring-purple-300 focus:outline-none focus-visible:outline-none transition-all duration-200 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400"
             />
             <motion.div
               whileHover={{ scale: 1.1 }}
@@ -72,10 +72,10 @@ const BottomInputSection = ({ onSent, setinput, input }) => {
               <Button
                 size="icon"
                 variant={isListening ? "default" : "ghost"}
-                className="absolute right-2 top-1/2 -translate-y-1/2 rounded-full"
+                className="absolute right-2 top-1/2 -translate-y-1/2 rounded-full dark:hover:bg-gray-700"
                 onClick={handleMicClick}
               >
-                <Mic className={`h-5 w-5 ${isListening ? 'text-red-500 animate-pulse' : 'text-gray-500'}`} />
+                <Mic className={`h-5 w-5 ${isListening ? 'text-red-500 animate-pulse' : 'text-gray-500 dark:text-gray-400'}`} />
                 <span className="sr-only">
                   {isListening ? 'Stop listening' : 'Start voice input'}
                 </span>
@@ -91,14 +91,14 @@ const BottomInputSection = ({ onSent, setinput, input }) => {
               variant="default"
               onClick={handleSend}
               disabled={!input.trim()}
-              className="h-12 w-12 lg:h-14 lg:w-14 rounded-2xl bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 shadow-lg shadow-blue-200 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="h-12 w-12 lg:h-14 lg:w-14 rounded-2xl bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 shadow-lg shadow-blue-200 dark:shadow-purple-900/30 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               <Send className="h-6 w-6 text-white" />
               <span className="sr-only">Send message</span>
             </Button>
           </motion.div>
         </div>
-        <p className="text-xs text-gray-500 mt-1 text-center">
+        <p className="text-xs text-gray-500 dark:text-gray-400 mt-1 text-center">
           Press Enter to send, Shift + Enter for new line
         </p>
       </div>

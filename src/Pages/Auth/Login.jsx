@@ -73,9 +73,9 @@ const Login = () => {
             initial={{ scale: 0 }}
             animate={{ scale: 1 }}
             transition={{ duration: 0.5, delay: 0.2 }}
-            src={assets.gemini}
+            src={assets.logo}
             alt="Logo"
-            className="h-12"
+            className="h-10 w-10 rounded-full object-cover"
           />
         </div>
 

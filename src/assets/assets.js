@@ -16,6 +16,8 @@ import gemini_icon from './gemini_icon.png'
 import Copy_text from './Copy_text.png'
 import like_text from './Like.png'
 import Rotate_arrow from './Rotate_arrow.png'
+import logo from './logo.png'
+
 export const assets = {
     history_icon,
     menu_icon,
@@ -35,4 +37,5 @@ export const assets = {
     send_icon,
     gemini_icon,
     Copy_text,
+    logo,
 }
