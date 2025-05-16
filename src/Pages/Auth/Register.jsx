@@ -1,7 +1,8 @@
-import { useState } from 'react';
+import { useState, useContext } from 'react';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { assets } from '@/assets/assets';
+import { Context } from '@/context/Context';
 
 const Register = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -13,6 +14,9 @@ const Register = () => {
   });
   const [errors, setErrors] = useState({});
   const navigate = useNavigate();
+  
+  // Get the register function from context
+  const { register } = useContext(Context);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -20,7 +24,6 @@ const Register = () => {
       ...prev,
       [name]: value
     }));
-    // Clear error when user starts typing
     if (errors[name]) {
       setErrors(prev => ({
         ...prev,
@@ -31,24 +34,16 @@ const Register = () => {
 
   const validateForm = () => {
     const newErrors = {};
-    if (!formData.name) {
-      newErrors.name = 'Name is required';
-    }
-    if (!formData.email) {
-      newErrors.email = 'Email is required';
-    } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-      newErrors.email = 'Email is invalid';
-    }
-    if (!formData.password) {
-      newErrors.password = 'Password is required';
-    } else if (formData.password.length < 6) {
-      newErrors.password = 'Password must be at least 6 characters';
-    }
-    if (!formData.confirmPassword) {
-      newErrors.confirmPassword = 'Please confirm your password';
-    } else if (formData.password !== formData.confirmPassword) {
-      newErrors.confirmPassword = 'Passwords do not match';
-    }
+    if (!formData.name) newErrors.name = 'Name is required';
+    if (!formData.email) newErrors.email = 'Email is required';
+    else if (!/\S+@\S+\.\S+/.test(formData.email)) newErrors.email = 'Email is invalid';
+
+    if (!formData.password) newErrors.password = 'Password is required';
+    else if (formData.password.length < 6) newErrors.password = 'Password must be at least 6 characters';
+
+    if (!formData.confirmPassword) newErrors.confirmPassword = 'Please confirm your password';
+    else if (formData.password !== formData.confirmPassword) newErrors.confirmPassword = 'Passwords do not match';
+
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -59,12 +54,17 @@ const Register = () => {
 
     setIsLoading(true);
     try {
-      // Here you would typically make an API call to your backend
-      // For now, we'll simulate registration
-      await new Promise(resolve => setTimeout(resolve, 1500));
-      navigate('/login');
+      // Use the register function from Context
+      const user = await register(formData.name, formData.email, formData.password);
+      
+      if (user) {
+        navigate('/');
+      } else {
+        setErrors({ submit: 'Registration failed. Please try again.' });
+      }
     } catch (error) {
-      setErrors({ submit: 'Failed to register. Please try again.' });
+      console.error(error);
+      setErrors({ submit: error.message || 'An unexpected error occurred.' });
     } finally {
       setIsLoading(false);
     }
@@ -99,106 +99,51 @@ const Register = () => {
         </motion.h2>
 
         <form onSubmit={handleSubmit} className="space-y-6">
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Full Name
-            </label>
-            <input
-              type="text"
-              name="name"
-              value={formData.name}
-              onChange={handleChange}
-              className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none transition-all ${
-                errors.name ? 'border-red-500' : 'border-gray-300'
-              }`}
-              placeholder="Enter your full name"
-            />
-            {errors.name && (
-              <motion.p
-                initial={{ opacity: 0, y: -10 }}
-                animate={{ opacity: 1, y: 0 }}
-                className="text-red-500 text-sm mt-1"
-              >
-                {errors.name}
-              </motion.p>
-            )}
-          </div>
+          {/* Full Name */}
+          <InputField
+            label="Full Name"
+            name="name"
+            type="text"
+            value={formData.name}
+            onChange={handleChange}
+            error={errors.name}
+            placeholder="Enter your full name"
+          />
 
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Email Address
-            </label>
-            <input
-              type="email"
-              name="email"
-              value={formData.email}
-              onChange={handleChange}
-              className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none transition-all ${
-                errors.email ? 'border-red-500' : 'border-gray-300'
-              }`}
-              placeholder="Enter your email"
-            />
-            {errors.email && (
-              <motion.p
-                initial={{ opacity: 0, y: -10 }}
-                animate={{ opacity: 1, y: 0 }}
-                className="text-red-500 text-sm mt-1"
-              >
-                {errors.email}
-              </motion.p>
-            )}
-          </div>
+          {/* Email */}
+          <InputField
+            label="Email Address"
+            name="email"
+            type="email"
+            value={formData.email}
+            onChange={handleChange}
+            error={errors.email}
+            placeholder="Enter your email"
+          />
 
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Password
-            </label>
-            <input
-              type="password"
-              name="password"
-              value={formData.password}
-              onChange={handleChange}
-              className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none transition-all ${
-                errors.password ? 'border-red-500' : 'border-gray-300'
-              }`}
-              placeholder="Create a password"
-            />
-            {errors.password && (
-              <motion.p
-                initial={{ opacity: 0, y: -10 }}
-                animate={{ opacity: 1, y: 0 }}
-                className="text-red-500 text-sm mt-1"
-              >
-                {errors.password}
-              </motion.p>
-            )}
-          </div>
+          {/* Password */}
+          <InputField
+            label="Password"
+            name="password"
+            type="password"
+            value={formData.password}
+            onChange={handleChange}
+            error={errors.password}
+            placeholder="Create a password"
+          />
 
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Confirm Password
-            </label>
-            <input
-              type="password"
-              name="confirmPassword"
-              value={formData.confirmPassword}
-              onChange={handleChange}
-              className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none transition-all ${
-                errors.confirmPassword ? 'border-red-500' : 'border-gray-300'
-              }`}
-              placeholder="Confirm your password"
-            />
-            {errors.confirmPassword && (
-              <motion.p
-                initial={{ opacity: 0, y: -10 }}
-                animate={{ opacity: 1, y: 0 }}
-                className="text-red-500 text-sm mt-1"
-              >
-                {errors.confirmPassword}
-              </motion.p>
-            )}
-          </div>
+          {/* Confirm Password */}
+          <InputField
+            label="Confirm Password"
+            name="confirmPassword"
+            type="password"
+            value={formData.confirmPassword}
+            onChange={handleChange}
+            error={errors.confirmPassword}
+            placeholder="Confirm your password"
+          />
 
+          {/* Submit Button */}
           <motion.button
             type="submit"
             whileHover={{ scale: 1.02 }}
@@ -243,4 +188,30 @@ const Register = () => {
   );
 };
 
-export default Register; 
+// Reusable InputField component
+const InputField = ({ label, name, type, value, onChange, error, placeholder }) => (
+  <div>
+    <label className="block text-sm font-medium text-gray-700 mb-1">{label}</label>
+    <input
+      type={type}
+      name={name}
+      value={value}
+      onChange={onChange}
+      className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none transition-all ${
+        error ? 'border-red-500' : 'border-gray-300'
+      }`}
+      placeholder={placeholder}
+    />
+    {error && (
+      <motion.p
+        initial={{ opacity: 0, y: -10 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="text-red-500 text-sm mt-1"
+      >
+        {error}
+      </motion.p>
+    )}
+  </div>
+);
+
+export default Register;

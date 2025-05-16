@@ -49,7 +49,10 @@ const MainContent = () => {
     startNewChat();
     navigate('/new-chat');
   };
-
+  const handleLearnMore = () => {
+    // Logic to navigate to the learn more page
+    navigate('/about');
+  };
   return (
     <div className="flex-1 overflow-y-auto scroll-smooth px-4 py-6 bg-white dark:bg-[#1E1E1E]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -103,12 +106,14 @@ const MainContent = () => {
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <button 
                 onClick={handleStartNewChat}
-                className="px-6 py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors flex items-center gap-2"
+                className="px-6 py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors flex items-center text-center gap-2"
               >
                 <Sparkles className="w-5 h-5" />
                 Start New Chat
               </button>
-              <button className="px-6 py-3 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors border border-gray-200 dark:border-gray-700">
+              <button
+              onClick={handleLearnMore}
+               className="px-6 py-3 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors border border-gray-200 dark:border-gray-700">
                 Learn More
               </button>
             </div>

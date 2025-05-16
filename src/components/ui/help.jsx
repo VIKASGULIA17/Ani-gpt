@@ -56,8 +56,8 @@ export function Help({ isOpen, onClose }) {
               <p className="text-gray-600 dark:text-gray-300 text-sm md:text-base">
                 If you need additional assistance, please contact our support team at:
                 <br />
-                <a href="mailto:vikasgulia1706@example.com" className="text-blue-500 hover:underline">
-                  vikasgulia1706@example.com
+                <a href="mailto:support@geminiclone.com" className="text-blue-500 hover:underline">
+                  vikasgulia1706@gmail.com
                 </a>
               </p>
             </div>

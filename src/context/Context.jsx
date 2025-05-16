@@ -1,17 +1,13 @@
-import { createContext, useState, useEffect } from "react";
-import run from "../config/gemini"; // Import the API function
-import Cookies from 'js-cookie';
+import { createContext, useState, useEffect, useCallback } from "react";
+import run from "../config/gemini";
+import supabase from "../config/supabase";
 
 export const Context = createContext();
 
-const CHAT_HISTORY_COOKIE = 'chat_history';
-const COOKIE_EXPIRY_DAYS = 7; // Chat history will be stored for 7 days
-
-const ContextProvider = (props) => {
-  // Define states
-  const [input, setinput] = useState("");
+const ContextProvider = ({ children }) => {
+  const [input, setInput] = useState("");
   const [recentPrompt, setRecentPrompt] = useState("");
-  const [showResult, setshowResult] = useState(false);
+  const [showResult, setShowResult] = useState(false);
   const [loading, setLoading] = useState(false);
   const [resultData, setResultData] = useState("");
   const [chatHistory, setChatHistory] = useState([]);
@@ -19,225 +15,368 @@ const ContextProvider = (props) => {
   const [currentChat, setCurrentChat] = useState(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [user, setUser] = useState(null);
-  const [isNewChat, setIsNewChat] = useState(false);
+  const [isProcessingMessage, setIsProcessingMessage] = useState(false);
 
-  // Load chat history from cookies on mount
+  // Get logged-in user
   useEffect(() => {
-    const storedChatHistory = Cookies.get(CHAT_HISTORY_COOKIE);
-    if (storedChatHistory) {
-      try {
-        const parsedHistory = JSON.parse(storedChatHistory);
-        setChatHistory(parsedHistory);
-      } catch (error) {
-        console.error('Error parsing chat history from cookies:', error);
+    const fetchUser = async () => {
+      const { data } = await supabase.auth.getUser();
+      if (data?.user) {
+        setUser(data.user);
+        setIsAuthenticated(true);
       }
-    }
+    };
+    fetchUser();
+
+    // Set up auth state change listener
+    const { data: authListener } = supabase.auth.onAuthStateChange(
+      (event, session) => {
+        if (event === "SIGNED_IN" && session?.user) {
+          setUser(session.user);
+          setIsAuthenticated(true);
+        } else if (event === "SIGNED_OUT") {
+          setUser(null);
+          setIsAuthenticated(false);
+          clearChat();
+        }
+      }
+    );
+
+    return () => {
+      if (authListener && authListener.subscription) {
+        authListener.subscription.unsubscribe();
+      }
+    };
   }, []);
 
-  // Save chat history to cookies whenever it changes
+  // Fetch chat history for authenticated user
   useEffect(() => {
-    if (chatHistory.length > 0) {
-      Cookies.set(CHAT_HISTORY_COOKIE, JSON.stringify(chatHistory), { expires: COOKIE_EXPIRY_DAYS });
-    } else {
-      Cookies.remove(CHAT_HISTORY_COOKIE);
-    }
-  }, [chatHistory]);
+    const fetchChats = async () => {
+      try {
+        const { data, error } = await supabase
+          .from("chats")
+          .select(`
+            id,
+            title,
+            user_id,
+            last_updated,
+            messages (
+              id,
+              prompt,
+              response,
+              created_at
+            )
+          `)
+          .eq("user_id", user?.id)
+          .order("last_updated", { ascending: false });
 
-  // Check for existing auth on mount
-  useEffect(() => {
-    const storedUser = localStorage.getItem('user');
-    if (storedUser) {
-      setUser(JSON.parse(storedUser));
-      setIsAuthenticated(true);
-    }
-  }, []);
+        if (error) {
+          console.error("Fetch chats error:", error.message);
+          return;
+        }
+
+        if (data?.length) {
+          // Ensure messages are sorted by created_at
+          const processedData = data.map(chat => ({
+            ...chat,
+            messages: chat.messages.sort((a, b) => 
+              new Date(a.created_at) - new Date(b.created_at)
+            )
+          }));
+          
+          setChatHistory(processedData);
+          
+          // Set the most recent chat as current
+          setSelectedChatIndex(0);
+          setCurrentChat(processedData[0]);
+          setShowResult(true);
+
+          const lastMsg = processedData[0].messages.at(-1);
+          if (lastMsg) {
+            setRecentPrompt(lastMsg.prompt);
+            setResultData(lastMsg.response);
+          }
+        }
+      } catch (err) {
+        console.error("Error fetching chats:", err);
+      }
+    };
+
+    if (user) fetchChats();
+  }, [user]);
 
   const login = async (email, password) => {
-    // Here you would typically make an API call to your backend
-    // For demo purposes, we'll simulate a successful login
-    const mockUser = {
-      id: '1',
-      name: email.split('@')[0],
-      email,
-    };
-    
-    localStorage.setItem('user', JSON.stringify(mockUser));
-    setUser(mockUser);
+    const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+    if (error) {
+      console.error("Login error:", error.message);
+      return null;
+    }
+    setUser(data.user);
     setIsAuthenticated(true);
-    return mockUser;
+    return data.user;
   };
 
   const register = async (name, email, password) => {
-    // Here you would typically make an API call to your backend
-    // For demo purposes, we'll simulate a successful registration
-    const mockUser = {
-      id: '1',
-      name,
+    const { data, error } = await supabase.auth.signUp({
       email,
-    };
-    
-    localStorage.setItem('user', JSON.stringify(mockUser));
-    setUser(mockUser);
-    setIsAuthenticated(true);
-    return mockUser;
-  };
+      password,
+      options: { data: { name } }
+    });
 
-  const logout = () => {
-    localStorage.removeItem('user');
-    setUser(null);
-    setIsAuthenticated(false);
-    setChatHistory([]);
-    setSelectedChatIndex(null);
-    setCurrentChat(null);
-    setshowResult(false);
-    setResultData("");
-    setRecentPrompt("");
-    setinput("");
-    Cookies.remove(CHAT_HISTORY_COOKIE);
-  };
-
-  // Function to handle delay for the animation
-  const delayPara = (index, nextWord) => {
-    setTimeout(() => {
-      setResultData((prev) => prev + nextWord);
-    }, 75 * index);
-  };
-
-  const startNewChat = () => {
-    setCurrentChat(null);
-    setSelectedChatIndex(null);
-    setshowResult(false);
-    setResultData("");
-    setRecentPrompt("");
-    setinput("");
-    setIsNewChat(true);
-  };
-
-  const setSelectedChat = (index) => {
-    console.log("Setting selected chat index:", index);
-    setSelectedChatIndex(index);
-    if (index !== null && chatHistory[index]) {
-      const selectedChat = chatHistory[index];
-      console.log("Setting current chat:", selectedChat);
-      setCurrentChat(selectedChat);
-      setshowResult(true);
-      if (selectedChat.messages && selectedChat.messages.length > 0) {
-        const lastMessage = selectedChat.messages[selectedChat.messages.length - 1];
-        setResultData(lastMessage.response);
-        setRecentPrompt(lastMessage.prompt);
-      }
-      setIsNewChat(false);
+    if (error) {
+      console.error("Registration error:", error.message);
+      return null;
     }
+
+    setUser(data.user);
+    setIsAuthenticated(true);
+    return data.user;
   };
 
-  // onSent function to handle prompt submission
-  const onSent = async () => {
-    if (!input.trim()) return;
+  const logout = async () => {
+    await supabase.auth.signOut();
+    clearChat();
+  };
+
+  const startNewChat = useCallback(() => {
+    setCurrentChat(null);
+    setSelectedChatIndex(null);
+    setShowResult(false);
+    setResultData("");
+    setRecentPrompt("");
+    setInput("");
+  }, []);
+
+  const setSelectedChat = useCallback((index) => {
+    if (index === selectedChatIndex) return;
     
+    setSelectedChatIndex(index);
+    const chat = chatHistory[index];
+    if (chat) {
+      setCurrentChat(chat);
+      setShowResult(true);
+      
+      // Reset other states to prevent mixing with previous chat
+      setResultData("");
+      setRecentPrompt("");
+      setInput("");
+      
+      const lastMsg = chat.messages.at(-1);
+      if (lastMsg) {
+        setRecentPrompt(lastMsg.prompt);
+        setResultData(lastMsg.response);
+      }
+    }
+  }, [chatHistory, selectedChatIndex]);
+
+  const onSent = async () => {
+    if (!input.trim() || isProcessingMessage) return;
+
     try {
-      setResultData(""); 
+      setIsProcessingMessage(true);
       setLoading(true);
-      setshowResult(true);
+      setShowResult(true);
+      
+      const currentPrompt = input;
+      setRecentPrompt(currentPrompt);
+      setResultData("");
+      setInput(""); // Clear input immediately to prevent duplicate sends
 
-      setRecentPrompt(input);
-      const response = await run(input);
-      if (!response) throw new Error("No response received");
+      let response = await run(currentPrompt);
+      if (!response) throw new Error("No response");
 
-      // Set the full response immediately without animation
+      if (typeof response === "string") {
+        response = response
+          .replace(/\b(i[' ]?m|i am|this is|my name is)\s*(gemini|a large language model|an ai model|a google ai)?[.,]*/gi, "I'm ani-gpt.")
+          .replace(/\bmy (name|model)( is|:)?.*?\b/gi, "My name is ani-gpt, developed by Vikas.")
+          .replace(/\b(i was developed|created|built) by google\b/gi, "I was developed by Vikas Gulia.")
+          .replace(/\b(google|gemini)( ai)? (created|developed|built) (me|this)\b/gi, "Vikas created me.")
+          .replace(/\bby google\b/gi, "by Vikas Gulia")
+          .replace(/\bfrom google\b/gi, "from Vikas Gulia")
+          .replace(/\bcreated by (google|gemini)\b/gi, "created by Vikas Gulia")
+          .replace(/\b(creator|developer)\b.*?(google|gemini)/gi, "$1 is Vikas Gulia")
+          .replace(/\bI (do not have|don't have) (a name|a physical form)[.,]*/gi, "I'm ani-gpt.")
+          .replace(/\bI('m| am) (an )?(ai|AI|artificial intelligence|language model).*/gi, "I'm ani-gpt.")
+          .replace(/As an? (AI|language model).*/gi, "Let's move on.");
+      }
+
       setResultData(response);
 
+      if (!user) {
+        // If not authenticated, just update the UI
+        setLoading(false);
+        setIsProcessingMessage(false);
+        return;
+      }
+
+      const timestamp = new Date().toISOString();
       const newMessage = {
-        prompt: input,
-        response: response,
-        timestamp: new Date().toISOString()
+        prompt: currentPrompt,
+        response,
+        created_at: timestamp
       };
 
       if (currentChat) {
-        // Add message to existing chat
-        const updatedChat = {
-          ...currentChat,
-          messages: [...currentChat.messages, newMessage],
-          lastUpdated: new Date().toISOString()
-        };
-        setChatHistory(prev => prev.map((chat, index) => 
-          index === selectedChatIndex ? updatedChat : chat
-        ));
-        setCurrentChat(updatedChat);
+        // Update existing chat
+        try {
+          const { data: msgData, error: msgError } = await supabase
+            .from("messages")
+            .insert([{
+              chat_id: currentChat.id,
+              user_id: user.id,
+              prompt: newMessage.prompt,
+              response: newMessage.response,
+              created_at: timestamp
+            }])
+            .select()
+            .single();
+
+          if (msgError) throw msgError;
+
+          const { error: chatError } = await supabase
+            .from("chats")
+            .update({ last_updated: timestamp })
+            .eq("id", currentChat.id);
+
+          if (chatError) throw chatError;
+
+          // Update local state with new message
+          const updatedChat = {
+            ...currentChat,
+            last_updated: timestamp,
+            messages: [...currentChat.messages, { 
+              ...newMessage, 
+              id: msgData.id
+            }]
+          };
+
+          setChatHistory(prev => 
+            prev.map((chat) => 
+              chat.id === currentChat.id ? updatedChat : chat
+            ).sort((a, b) => 
+              new Date(b.last_updated) - new Date(a.last_updated)
+            )
+          );
+          setCurrentChat(updatedChat);
+          setSelectedChatIndex(0); // Move to top of list
+        } catch (error) {
+          console.error("Error updating chat:", error);
+        }
       } else {
-        // Create new chat thread
-        const newChat = {
-          id: Date.now(),
-          title: input.substring(0, 30) + (input.length > 30 ? "..." : ""),
-          messages: [newMessage],
-          lastUpdated: new Date().toISOString()
-        };
-        setChatHistory(prev => [newChat, ...prev]);
-        setCurrentChat(newChat);
-        setSelectedChatIndex(0);
+        // Create new chat
+        try {
+          const { data: chatData, error: chatError } = await supabase
+            .from("chats")
+            .insert([{
+              title: currentPrompt.substring(0, 30) + (currentPrompt.length > 30 ? "..." : ""),
+              user_id: user.id,
+              last_updated: timestamp
+            }])
+            .select()
+            .single();
+
+          if (chatError) throw chatError;
+
+          const { data: msgData, error: msgError } = await supabase
+            .from("messages")
+            .insert([{
+              chat_id: chatData.id,
+              user_id: user.id,
+              prompt: newMessage.prompt,
+              response: newMessage.response,
+              created_at: timestamp
+            }])
+            .select()
+            .single();
+
+          if (msgError) throw msgError;
+
+          const newChatWithMessages = {
+            ...chatData,
+            messages: [{ 
+              ...newMessage,
+              id: msgData.id
+            }]
+          };
+
+          setChatHistory(prev => [newChatWithMessages, ...prev]);
+          setCurrentChat(newChatWithMessages);
+          setSelectedChatIndex(0);
+        } catch (error) {
+          console.error("Error creating new chat:", error);
+        }
       }
-      
-      setLoading(false);
-      setinput("");
-    } catch (error) {
-      console.error("Error handling response:", error);
-      setLoading(false);
+    } catch (err) {
+      console.error("Error:", err);
       setResultData("An error occurred. Please try again.");
+    } finally {
+      setLoading(false);
+      setIsProcessingMessage(false);
     }
   };
 
-  const clearChat = () => {
+  const clearChat = useCallback(() => {
     setChatHistory([]);
     setSelectedChatIndex(null);
     setCurrentChat(null);
-    setshowResult(false);
+    setShowResult(false);
     setResultData("");
     setRecentPrompt("");
-    setinput("");
-    Cookies.remove(CHAT_HISTORY_COOKIE);
-  };
+    setInput("");
+  }, []);
 
-  const deleteChat = (chatId) => {
-    setChatHistory(prev => prev.filter(chat => chat.id !== chatId));
-    if (currentChat?.id === chatId) {
-      setCurrentChat(null);
-      setSelectedChatIndex(null);
-      setshowResult(false);
-      setResultData("");
-      setRecentPrompt("");
-      setinput("");
-    } else if (selectedChatIndex !== null && chatHistory[selectedChatIndex]?.id === chatId) {
-      setSelectedChatIndex(null);
+  const deleteChat = async (chatId) => {
+    try {
+      await supabase.from("chats").delete().eq("id", chatId);
+      setChatHistory(prev => prev.filter(chat => chat.id !== chatId));
+      
+      if (currentChat?.id === chatId) {
+        // If we deleted the current chat, either select the next one or clear
+        if (chatHistory.length > 1) {
+          const newIndex = selectedChatIndex === 0 ? 0 : selectedChatIndex - 1;
+          setSelectedChat(newIndex);
+        } else {
+          clearChat();
+        }
+      } else if (selectedChatIndex !== null) {
+        // Adjust selected index if needed
+        const deletedIndex = chatHistory.findIndex(chat => chat.id === chatId);
+        if (deletedIndex !== -1 && deletedIndex < selectedChatIndex) {
+          setSelectedChatIndex(selectedChatIndex - 1);
+        }
+      }
+    } catch (error) {
+      console.error("Error deleting chat:", error);
     }
   };
 
-  // Context value to share states and functions
-  const contextValue = {
-    onSent,
-    setRecentPrompt,
-    recentPrompt,
-    showResult,
-    loading,
-    resultData,
-    input,
-    setinput,
-    chatHistory,
-    selectedChatIndex,
-    setSelectedChat,
-    clearChat,
-    startNewChat,
-    currentChat,
-    setCurrentChat,
-    isAuthenticated,
-    user,
-    login,
-    register,
-    logout,
-    deleteChat
-  };
-
   return (
-    <Context.Provider value={contextValue}>
-      {props.children} {/* Render child components */}
+    <Context.Provider
+      value={{
+        onSent,
+        setRecentPrompt,
+        recentPrompt,
+        showResult,
+        loading,
+        resultData,
+        input,
+        setInput,
+        chatHistory,
+        selectedChatIndex,
+        setSelectedChat,
+        clearChat,
+        startNewChat,
+        currentChat,
+        setCurrentChat,
+        isAuthenticated,
+        user,
+        login,
+        register,
+        logout,
+        deleteChat
+      }}
+    >
+      {children}
     </Context.Provider>
   );
 };

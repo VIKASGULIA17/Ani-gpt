@@ -1,7 +1,8 @@
-import { useState } from 'react';
+import { useState,useContext } from 'react';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { assets } from '@/assets/assets';
+import { Context } from '@/context/Context';
 
 const Login = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -11,6 +12,9 @@ const Login = () => {
   });
   const [errors, setErrors] = useState({});
   const navigate = useNavigate();
+
+  const { login } = useContext(Context);
+
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -44,21 +48,26 @@ const Login = () => {
   };
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    if (!validateForm()) return;
+  e.preventDefault();
+  if (!validateForm()) return;
 
-    setIsLoading(true);
-    try {
-      // Here you would typically make an API call to your backend
-      // For now, we'll simulate a login
-      await new Promise(resolve => setTimeout(resolve, 1500));
+  setIsLoading(true);
+  try {
+    console.log(formData);
+    const user = await login(formData.email, formData.password);
+    if (user) {
       navigate('/');
-    } catch (error) {
-      setErrors({ submit: 'Failed to login. Please try again.' });
-    } finally {
-      setIsLoading(false);
+    } else {
+      setErrors({ submit: 'Invalid credentials or login failed.' });
     }
-  };
+  } catch (error) {
+    console.error(error);
+    setErrors({ submit: 'An unexpected error occurred.' });
+  } finally {
+    setIsLoading(false);
+  }
+};
+
 
   return (
     <div className="min-h-screen bg-gray-100 flex items-center justify-center p-4">
