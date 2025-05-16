@@ -5,9 +5,9 @@ import { AiOutlineLike } from "react-icons/ai";
 import { HiOutlineSpeakerWave } from "react-icons/hi2";
 import { MdContentCopy } from "react-icons/md";
 import Markdown from "react-markdown";
-import { Bot } from "lucide-react";
+import { Bot, Rotate3d } from "lucide-react";
 import { useTheme } from "../context/ThemeContext"; 
-import rotate_arrow from "../assets/rotate_arrow.png"; 
+import { Rotate3D } from "lucide-react";
 import user_icon from "../assets/user_icon.png"; 
 import HomeCards from "./HomeCards";
 import SyntaxHighlighter from 'react-syntax-highlighter';import { atelierCaveLight, atomOneDark } from "react-syntax-highlighter/dist/esm/styles/hljs";
@@ -212,7 +212,7 @@ const CodeBlock = ({ node, inline, className, children, ...props }) => {
                 onClick={handleRegenerate} 
                 className="text-gray-500 dark:text-gray-400"
               >
-                <img src={rotate_arrow} alt="Regenerate" className="w-3 h-3"/>
+                <Rotate3d className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
               </button>
             </div>
             <span className="text-[8px] sm:text-[10px] text-gray-400 dark:text-gray-500">

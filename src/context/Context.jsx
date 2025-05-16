@@ -189,7 +189,7 @@ const ContextProvider = ({ children }) => {
         response = response
           .replace(/\b(i[' ]?m|i am|this is|my name is)\s*(gemini|a large language model|an ai model|a google ai)?[.,]*/gi, "I'm ani-gpt.")
           .replace(/\bmy (name|model)( is|:)?.*?\b/gi, "My name is ani-gpt, developed by Vikas.")
-          .replace(/\b(i was developed|created|built) by google\b/gi, "I was developed by Vikas Gulia.")
+          .replace(/\b(i was developed|created|built) by google\b/gi, "developed by Vikas Gulia.")
           .replace(/\b(google|gemini)( ai)? (created|developed|built) (me|this)\b/gi, "Vikas created me.")
           .replace(/\bby google\b/gi, "by Vikas Gulia")
           .replace(/\bfrom google\b/gi, "from Vikas Gulia")
