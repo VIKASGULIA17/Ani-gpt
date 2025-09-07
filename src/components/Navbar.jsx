@@ -92,7 +92,6 @@ const Navbar = () => {
     { label: "New Chat", icon: <MessageSquare className="w-5 h-5" />, path: "/new-chat", action: () => { startNewChat(); navigate("/new-chat"); } },
     { label: "Home", icon: <Home className="w-5 h-5" />, path: "/", action: () => navigate("/") },
     { label: "History", icon: <History className="w-5 h-5" />, path: "/history", action: () => navigate("/history") },
-    { label: "Settings", icon: <Settings className="w-5 h-5" />, action: () => setIsSettingsOpen(true) },
     { label: "Help", icon: <HelpCircle className="w-5 h-5" />, action: () => setIsHelpOpen(true) },
     { label: "About", icon: <User className="w-5 h-5" />, path: "/about", action: () => navigate("/about") }
   ];
@@ -132,7 +131,7 @@ const Navbar = () => {
 
           {/* Logo */}
           <Link to="/" className="flex items-center">
-            <img src={assets.logo} alt="Logo" className="h-10 w-10 rounded-full object-cover" />
+            <img src={assets.logo} alt="Logo" className="h-10 w-10 lg:h-16 lg:w-16 rounded-xl object-cover" />
           </Link>
 
           {/* Desktop Links */}
@@ -224,7 +223,6 @@ const Navbar = () => {
       </nav>
 
       {/* Modals */}
-      <SettingsModal isOpen={isSettingsOpen} onClose={() => setIsSettingsOpen(false)} />
       <Help isOpen={isHelpOpen} onClose={() => setIsHelpOpen(false)} />
     </>
   );

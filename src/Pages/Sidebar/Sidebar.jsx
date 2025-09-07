@@ -5,36 +5,21 @@ import { motion } from "framer-motion";
 import {
   Home,
   History,
-  Settings,
   HelpCircle,
   LogOut,
   Menu,
   X,
   Plus
 } from "lucide-react";
-import { Settings as SettingsModal } from "../../components/ui/settings";
 import { Help } from "../../components/ui/help";
-import supabase from "../../config/supabase";
 
 const Sidebar = () => {
-  const { isAuthenticated, setIsAuthenticated, startNewChat, clearChat } =
-    useContext(Context);
+  const {  startNewChat, clearChat } = useContext(Context);
   const location = useLocation();
-  const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [isHelpOpen, setIsHelpOpen] = useState(false);
 
-  // ✅ Working logout with Supabase
-  const handleLogout = async () => {
-    const { error } = await supabase.auth.signOut();
-    if (error) {
-      console.error("Logout error:", error.message);
-      return;
-    }
-    setIsAuthenticated(false);
-    navigate("/login");
-  };
 
   const handleNewChat = () => {
     startNewChat();
@@ -67,11 +52,7 @@ const Sidebar = () => {
       icon: <History className="w-5 h-5" />,
       path: "/history"
     },
-    {
-      label: "Settings",
-      icon: <Settings className="w-5 h-5" />,
-      onClick: handleSettingsClick
-    },
+    
     {
       label: "Help",
       icon: <HelpCircle className="w-5 h-5" />,
@@ -86,19 +67,7 @@ const Sidebar = () => {
 
   return (
     <>
-      {/* Mobile Menu Button */}
-      <button
-        onClick={() => setIsOpen(!isOpen)}
-        className="fixed top-4 left-4 z-50 md:hidden bg-white dark:bg-gray-800 p-2 rounded-lg shadow-lg dark:shadow-gray-900"
-      >
-        {isOpen ? (
-          <X className="w-6 h-6 dark:text-gray-300" />
-        ) : (
-          <Menu className="w-6 h-6 dark:text-gray-300" />
-        )}
-      </button>
-
-      {/* Mobile Sidebar */}
+      
       
 
       {/* Desktop Sidebar */}
@@ -163,10 +132,7 @@ const Sidebar = () => {
       {/* Modals */}
       <div className="fixed inset-0 z-[100] pointer-events-none">
         <div className="pointer-events-auto">
-          <SettingsModal
-            isOpen={isSettingsOpen}
-            onClose={() => setIsSettingsOpen(false)}
-          />
+          
           <Help isOpen={isHelpOpen} onClose={() => setIsHelpOpen(false)} />
         </div>
       </div>

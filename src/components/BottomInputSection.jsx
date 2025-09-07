@@ -53,7 +53,7 @@ const BottomInputSection = ({ onSent, setInput, input }) => {
   };
 
   return (
-    <div className="w-full mx-auto px-4 py-1">
+    <div className="w-full mx-auto px-4 py-1 bg-white dark:bg-transparent">
       <div className="max-w-4xl mx-auto">
         <div className="relative flex items-center gap-2">
           <div className="relative flex-grow">

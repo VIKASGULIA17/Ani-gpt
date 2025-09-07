@@ -53,7 +53,6 @@ const Login = () => {
 
   setIsLoading(true);
   try {
-    console.log(formData);
     const user = await login(formData.email, formData.password);
     if (user) {
       navigate('/');
@@ -84,7 +83,7 @@ const Login = () => {
             transition={{ duration: 0.5, delay: 0.2 }}
             src={assets.logo}
             alt="Logo"
-            className="h-10 w-10 rounded-full object-cover"
+            className="h-20 w-20 rounded-2xl object-cover"
           />
         </div>
 
@@ -148,26 +147,7 @@ const Login = () => {
             )}
           </div>
 
-          <div className="flex items-center justify-between">
-            <div className="flex items-center">
-              <input
-                type="checkbox"
-                id="remember"
-                className="h-4 w-4 text-blue-500 rounded border-gray-300"
-              />
-              <label htmlFor="remember" className="ml-2 text-sm text-gray-600">
-                Remember me
-              </label>
-            </div>
-            <button
-              type="button"
-              className="text-sm text-blue-500 hover:text-blue-600"
-              onClick={() => navigate('/forgot-password')}
-            >
-              Forgot Password?
-            </button>
-          </div>
-
+          
           <motion.button
             type="submit"
             whileHover={{ scale: 1.02 }}

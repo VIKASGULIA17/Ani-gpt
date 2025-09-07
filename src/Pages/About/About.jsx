@@ -82,15 +82,15 @@ const About = () => {
         >
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <div className="text-center">
-              <h4 className="text-4xl font-bold mb-2">69k+</h4>
+              <h4 className="text-4xl font-bold mb-2">50+ </h4>
               <p className="text-lg">Users Worldwide</p>
             </div>
             <div className="text-center">
-              <h4 className="text-4xl font-bold mb-2">1M+</h4>
+              <h4 className="text-4xl font-bold mb-2">500+</h4>
               <p className="text-lg">Queries Answered</p>
             </div>
             <div className="text-center">
-              <h4 className="text-4xl font-bold mb-2">1000%</h4>
+              <h4 className="text-4xl font-bold mb-2">87%</h4>
               <p className="text-lg">Satisfaction Rate</p>
             </div>
           </div>

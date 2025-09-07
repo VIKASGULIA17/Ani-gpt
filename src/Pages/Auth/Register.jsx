@@ -85,7 +85,7 @@ const Register = () => {
             transition={{ duration: 0.5, delay: 0.2 }}
             src={assets.logo}
             alt="Logo"
-            className="h-10 w-10 rounded-full object-cover"
+            className="h-20 w-20 rounded-xl object-cover"
           />
         </div>
 

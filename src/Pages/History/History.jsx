@@ -3,7 +3,7 @@ import { Context } from "../../context/Context";
 import { motion } from "framer-motion";
 import { Trash2, MessageSquare } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import supabase from "../../config/supabase"; // Adjust path as needed
+import supabase from "../../config/supabase"; 
 
 const History = () => {
   const { chatHistory, setSelectedChat, deleteChat, setCurrentChat } = useContext(Context);
@@ -30,7 +30,6 @@ const History = () => {
   const handleChatClick = (index) => {
     const selectedChat = chatHistory[index];
     if (selectedChat) {
-      // Ensure messages is an array
       const safeChat = {
         ...selectedChat,
         messages: Array.isArray(selectedChat.messages) ? selectedChat.messages : [],
@@ -43,10 +42,9 @@ const History = () => {
   };
 
   const handleDeleteChat = async (chatId, e) => {
-    e.stopPropagation(); // Prevent navigation on delete
+    e.stopPropagation(); 
     
     try {
-      // Delete the chat from Supabase
       const { error } = await supabase
         .from("chats")
         .delete()
@@ -57,7 +55,6 @@ const History = () => {
         return;
       }
       
-      // Update local state
       deleteChat(chatId);
     } catch (error) {
       console.error("Error in handleDeleteChat:", error);
@@ -66,7 +63,7 @@ const History = () => {
 
   return (
     <div className="p-4">
-      <h2 className="text-xl font-bold mb-4 text-gray-800 dark:text-gray-200">
+      <h2 className="text-2xl font-bold mb-4 text-center text-gray-800 dark:text-gray-200">
         Chat History
       </h2>
       
@@ -76,14 +73,14 @@ const History = () => {
           <p className="text-gray-500 dark:text-gray-400">No chat history yet</p>
         </div>
       ) : (
-        <div className="space-y-2">
+        <div className="space-y-2 md:px-10 lg:px-20 ">
           {chatHistory.map((chat, index) => (
             <motion.div
               key={chat.id || index}
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.2, delay: index * 0.05 }}
-              className="flex items-center justify-between p-3 bg-white dark:bg-gray-800 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 cursor-pointer transition-colors"
+              className="flex items-center justify-between lg:py-4 p-3 bg-white border-2 border-zinc-600 dark:bg-black rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 cursor-pointer transition-colors"
               onClick={() => handleChatClick(index)}
             >
               <div className="flex items-center space-x-3">

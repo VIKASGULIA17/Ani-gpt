@@ -4,13 +4,14 @@ import { useContext } from "react";
 import { Context } from "../context/Context";
 import { useNavigate } from "react-router-dom";
 import { Bot, Sparkles, MessageSquare, Code } from "lucide-react";
+import ParticlesBackground from "../components/ui/ParticlesBackground";
 
 const FeatureCard = ({ title, description, icon, delay }) => (
   <motion.div
     initial={{ opacity: 0, y: 20 }}
     animate={{ opacity: 1, y: 0 }}
     transition={{ duration: 0.5, delay }}
-    className="bg-white dark:bg-[#242424] rounded-xl shadow-lg dark:shadow-purple-900/10 p-6 hover:shadow-xl transition-all duration-300 hover:scale-[1.02]"
+    className="bg-white dark:bg-black/5 rounded-xl shadow-lg dark:shadow-white/10  p-6 hover:shadow-xl transition-all duration-300 dark:hover:bg-black hover:scale-[1.02] border border-black-800"
   >
     <div className="flex items-center gap-4 mb-4">
       <div className="p-3 bg-blue-100 dark:bg-blue-900/30 rounded-lg">
@@ -54,7 +55,8 @@ const MainContent = () => {
     navigate('/about');
   };
   return (
-    <div className="flex-1 overflow-y-auto scroll-smooth px-4 py-6 bg-white dark:bg-[#1E1E1E]">
+    <div className="flex-1 overflow-y-auto scroll-smooth px-4 py-6 bg-transparent backdrop:blur-md">
+      <ParticlesBackground />
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Welcome Section */}
           <motion.div 
@@ -94,7 +96,7 @@ const MainContent = () => {
                       initial={{ opacity: 0, y: 20 }}
                       animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.4 }}
-          className="bg-gradient-to-br from-blue-50 to-purple-50 dark:from-[#1E1E1E] dark:to-[#242424] rounded-2xl p-8 shadow-lg dark:shadow-purple-900/10"
+          className="bg-gradient-to-br from-blue-50 to-purple-50 dark:from-[#1E1E1E] dark:to-[#242424] rounded-2xl p-8 shadow-lg dark:shadow-purple-900/10 dark:hover:from-black border border-white "
         >
           <div className="max-w-3xl mx-auto text-center">
             <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-4">

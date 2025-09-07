@@ -7,9 +7,7 @@ import { MdContentCopy } from "react-icons/md";
 import Markdown from "react-markdown";
 import { Bot, Rotate3d } from "lucide-react";
 import { useTheme } from "../context/ThemeContext"; 
-import { Rotate3D } from "lucide-react";
 import user_icon from "../assets/user_icon.png"; 
-import HomeCards from "./HomeCards";
 import SyntaxHighlighter from 'react-syntax-highlighter';import { atelierCaveLight, atomOneDark } from "react-syntax-highlighter/dist/esm/styles/hljs";
 
 const LoadingDots = () => (
@@ -23,8 +21,6 @@ const LoadingDots = () => (
     ))}
   </div>
 );
-
-
 
 const ResultSection = ({ loading, resultData, recentPrompt, showTime }) => {
   const [copied, setCopied] = useState(false);
@@ -164,7 +160,7 @@ const CodeBlock = ({ node, inline, className, children, ...props }) => {
         </div>
 
         <motion.div
-          className="w-full max-w-[85%] bg-white dark:bg-[#242424] rounded-2xl shadow-lg dark:shadow-purple-900/10 border border-gray-100 dark:border-gray-700/50 p-2 sm:p-4"
+          className="w-full max-w-[85%] bg-white dark:bg-[#100f0f] rounded-2xl shadow-lg dark:shadow-purple-900/10 border border-gray-100 dark:border-gray-700/50 p-2 sm:p-4 overflow-scroll"
           initial={{ scale: 0.98 }}
           animate={{ scale: 1 }}
           transition={{ duration: 0.2 }}

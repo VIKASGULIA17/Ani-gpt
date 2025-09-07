@@ -5,6 +5,7 @@ import ResultSection from "./ResultSection";
 import BottomInputSection from "./BottomInputSection";
 import { useTheme } from "../context/ThemeContext";
 import { Bot } from "lucide-react";
+import ParticlesBackground from "../components/ui/ParticlesBackground";
 
 const ChatPage = () => {
   const { 
@@ -43,11 +44,13 @@ const ChatPage = () => {
   };
 
   return (
-    <div className="flex flex-col h-full">
+    <div className="flex flex-col h-full relative">
+      <ParticlesBackground />
       {/* Chat Messages */}
       <div 
         ref={chatContainerRef}
-        className="flex-1 overflow-y-auto scroll-smooth px-4 py-6 bg-white dark:bg-[#1E1E1E]"
+        className="flex-1 overflow-y-auto scroll-smooth px-4 pt-6 bg-transparent"
+
       >
         <div className="max-w-4xl mx-auto">
           {(!currentChat || !currentChat.messages || currentChat.messages.length === 0) && (
